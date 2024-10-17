@@ -1,9 +1,10 @@
 // database/database.js
-const { Sequelize } = require('sequelize');
+import { Sequelize } from 'sequelize';
 
-const sequelize = new Sequelize('bolsa_empleo', 'root', '', {
+const db = new Sequelize('bolsa_de_empleo', 'root', '', {
   host: 'localhost',
   dialect: 'mysql',
 });
-
-module.exports = sequelize;
+ 
+export default db; 
+ 

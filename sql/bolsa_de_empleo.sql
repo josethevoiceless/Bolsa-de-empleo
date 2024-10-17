@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 26-08-2024 a las 03:57:30
+-- Tiempo de generación: 17-10-2024 a las 07:58:54
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.0.30
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `bolsa_empleo`
+-- Base de datos: `bolsa_de_empleo`
 --
 
 -- --------------------------------------------------------
@@ -101,24 +101,22 @@ CREATE TABLE `solicitudes_empleo` (
 --
 
 CREATE TABLE `usuarios` (
-  `id_usuario` int(11) NOT NULL,
-  `nombre` varchar(255) NOT NULL,
-  `apellido` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `foto_perfil` varchar(255) DEFAULT NULL,
-  `descripcion` text DEFAULT NULL,
-  `ubicacion` varchar(255) DEFAULT NULL,
+  `id` int(11) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `apellido` varchar(100) NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `password` varchar(150) NOT NULL,
   `rol` enum('empleador','candidato') NOT NULL,
-  `fecha_creacion` datetime DEFAULT NULL
+  `createdAt` date NOT NULL,
+  `updatedAt` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id_usuario`, `nombre`, `apellido`, `email`, `password`, `foto_perfil`, `descripcion`, `ubicacion`, `rol`, `fecha_creacion`) VALUES
-(1, 'John', 'Doe', 'john.doe@example.com', 'password123', NULL, NULL, NULL, 'candidato', '2024-08-26 01:48:50');
+INSERT INTO `usuarios` (`id`, `nombre`, `apellido`, `email`, `password`, `rol`, `createdAt`, `updatedAt`) VALUES
+(147, 'Alejandro', 'De la espriella', 'example@gmail.com', '12345', 'empleador', '0000-00-00', '0000-00-00');
 
 --
 -- Índices para tablas volcadas
@@ -167,8 +165,7 @@ ALTER TABLE `solicitudes_empleo`
 -- Indices de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`id_usuario`),
-  ADD UNIQUE KEY `email` (`email`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -208,7 +205,7 @@ ALTER TABLE `solicitudes_empleo`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=148;
 
 --
 -- Restricciones para tablas volcadas
@@ -218,35 +215,35 @@ ALTER TABLE `usuarios`
 -- Filtros para la tabla `empleos`
 --
 ALTER TABLE `empleos`
-  ADD CONSTRAINT `empleos_ibfk_1` FOREIGN KEY (`id_empleador`) REFERENCES `usuarios` (`id_usuario`);
+  ADD CONSTRAINT `empleos_ibfk_1` FOREIGN KEY (`id_empleador`) REFERENCES `usuarios` (`id`);
 
 --
 -- Filtros para la tabla `mensajes`
 --
 ALTER TABLE `mensajes`
-  ADD CONSTRAINT `mensajes_ibfk_1` FOREIGN KEY (`id_remitente`) REFERENCES `usuarios` (`id_usuario`),
-  ADD CONSTRAINT `mensajes_ibfk_2` FOREIGN KEY (`id_destinatario`) REFERENCES `usuarios` (`id_usuario`);
+  ADD CONSTRAINT `mensajes_ibfk_1` FOREIGN KEY (`id_remitente`) REFERENCES `usuarios` (`id`),
+  ADD CONSTRAINT `mensajes_ibfk_2` FOREIGN KEY (`id_destinatario`) REFERENCES `usuarios` (`id`);
 
 --
 -- Filtros para la tabla `perfiles_profesionales`
 --
 ALTER TABLE `perfiles_profesionales`
-  ADD CONSTRAINT `perfiles_profesionales_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`);
+  ADD CONSTRAINT `perfiles_profesionales_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`);
 
 --
 -- Filtros para la tabla `recomendaciones_empleo`
 --
 ALTER TABLE `recomendaciones_empleo`
   ADD CONSTRAINT `recomendaciones_empleo_ibfk_1` FOREIGN KEY (`id_empleo`) REFERENCES `empleos` (`id_empleo`),
-  ADD CONSTRAINT `recomendaciones_empleo_ibfk_2` FOREIGN KEY (`id_recomendador`) REFERENCES `usuarios` (`id_usuario`),
-  ADD CONSTRAINT `recomendaciones_empleo_ibfk_3` FOREIGN KEY (`id_recomendado`) REFERENCES `usuarios` (`id_usuario`);
+  ADD CONSTRAINT `recomendaciones_empleo_ibfk_2` FOREIGN KEY (`id_recomendador`) REFERENCES `usuarios` (`id`),
+  ADD CONSTRAINT `recomendaciones_empleo_ibfk_3` FOREIGN KEY (`id_recomendado`) REFERENCES `usuarios` (`id`);
 
 --
 -- Filtros para la tabla `solicitudes_empleo`
 --
 ALTER TABLE `solicitudes_empleo`
   ADD CONSTRAINT `solicitudes_empleo_ibfk_1` FOREIGN KEY (`id_empleo`) REFERENCES `empleos` (`id_empleo`),
-  ADD CONSTRAINT `solicitudes_empleo_ibfk_2` FOREIGN KEY (`id_candidato`) REFERENCES `usuarios` (`id_usuario`);
+  ADD CONSTRAINT `solicitudes_empleo_ibfk_2` FOREIGN KEY (`id_candidato`) REFERENCES `usuarios` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
