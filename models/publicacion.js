@@ -21,6 +21,8 @@ const Publicacion = sequelize.define('Publicacion', {
   tableName: 'publicaciones'
 });
 
+
+
 // Relación con usuarios (Un usuario puede tener muchas publicaciones)
 Publicacion.belongsTo(Usuario, { foreignKey: 'idUsuario', onDelete: 'CASCADE' });
 

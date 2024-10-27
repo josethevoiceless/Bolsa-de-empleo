@@ -1,62 +1,71 @@
+// server.js (ajustado)
+
 import express from 'express';
 import db from '../database/database.js';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 import UserModel from '../models/Usuario.js';
 import Router from '../routes/usuarioRoutes.js';
-import dotenv from 'dotenv'; 
-import recommendationRoutes from '../routes/recommendationRoutes.js';
+import publicacionesRoutes from '../routes/publicacionRoutes.js';
+import likeRoutes from '../routes/likeRoutes.js';
+import empleoRoutes from '../routes/empleoRoutes.js';
+import { getRecommendations } from '../algorithm/Recomendaciones.js';
+import { configurarAsociaciones } from '../models/asociaciones.js';
 
 const app = express();
-
-// Cargar las variables de entorno definidas en el archivo .env
 dotenv.config();
 
-// Habilitar el uso de JSON en el body de la request
-app.use(express.json());
+// Configurar asociaciones de modelos
+configurarAsociaciones();
 
-// Habilitar el uso de CORS para permitir peticiones desde dominios diferentes
+// Middlewares
+app.use(express.json());
 app.use(cors());
 
-// Definir la ruta para las operaciones de usuarios
-app.use('/usuarios', Router); // Aquí se corrige el prefijo a /usuarios
+// Rutas principales
+app.use('/usuarios', Router);
+app.use('/publicaciones', publicacionesRoutes);
+app.use('/publicaciones', likeRoutes);
+app.use('/empleos', empleoRoutes);
 
-// Definir la ruta de las recomendaciones
-app.use('/api', recommendationRoutes);
+// Ruta para obtener recomendaciones de un usuario específico
+app.get('/usuarios/:userId/recommendations', async (req, res) => {
+    try {
+        const recommendations = await getRecommendations(req.params.userId);
+        res.status(200).json(recommendations);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
 // Ruta para login
 app.post('/login', async (req, res) => {
     const secretKey = process.env.SECRET_KEY;
     try {
-        if (!secretKey) {
-            throw new Error('SECRET_KEY is not defined in .env file');
-        }
+        if (!secretKey) throw new Error('SECRET_KEY no está definido en el archivo .env');
         const { email, password } = req.body;
         const user = await UserModel.findOne({ where: { email } });
 
         if (!user || password !== user.password) {
-            return res.status(401).json({ message: 'Cedula o Contraseña incorrectos' });
+            return res.status(401).json({ message: 'Correo o contraseña incorrectos' });
         }
 
-        const token = jwt.sign({ Cedula: user.password, nombre: user.nombre }, secretKey, { expiresIn: '1s' });
-
+        const token = jwt.sign({ userId: user.id_usuario, nombre: user.nombre }, secretKey, { expiresIn: '1h' });
         return res.json({ token });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
 });
 
-// Verificar la conexión a la base de datos
-try {
-    await db.authenticate();
-    console.log('Conexión a la base de datos exitosa');
-} catch (error) {
-    console.error('Error en la conexión a la base de datos:', error.message);
-    console.error('Detalles completos del error:', error);
-}
+// Verificar conexión a la base de datos
+db.authenticate()
+    .then(() => console.log('Conexión a la base de datos exitosa'))
+    .catch(error => console.error('Error en la conexión a la base de datos:', error));
 
-// Iniciar el servidor en el puerto 3006
-app.listen(3006, () => {
-    console.log('Servidor corriendo en el puerto 3006');
-    console.log('Visita http://localhost:3006 para verificar la conexión');
+// Iniciar servidor
+const PORT = process.env.PORT || 3006;
+app.listen(PORT, () => {
+    console.log(`Servidor corriendo en el puerto ${PORT}`);
+    console.log(`Visita http://localhost:${PORT} para verificar la conexión`);
 });

@@ -16,7 +16,7 @@ export const likePublicacion = async (req, res) => {
 
     res.status(201).json({ message: 'Like registrado' });
   } catch (error) {
-    res.status(500).json({ error: 'Error al dar like' });
+    res.status(500).json({ error: 'Error al dar like', error });
   }
 };
 

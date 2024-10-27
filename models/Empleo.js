@@ -32,4 +32,6 @@ const Empleo = sequelize.define('Empleo', {
   tableName: 'empleos'
 });
 
+
+
 export default Empleo;

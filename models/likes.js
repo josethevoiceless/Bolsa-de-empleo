@@ -5,7 +5,7 @@ import Usuario from './Usuario.js';
 import Publicacion from './publicacion.js';
 
 const Like = sequelize.define('Like', {
-  id_like: {
+  id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true

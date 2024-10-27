@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-10-2024 a las 00:52:40
+-- Tiempo de generación: 26-10-2024 a las 18:13:18
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -49,8 +49,16 @@ CREATE TABLE `empleos` (
   `ubicacion` varchar(100) DEFAULT NULL,
   `tipo` enum('tiempo completo','medio tiempo','freelance','prácticas') NOT NULL,
   `salario` decimal(10,2) DEFAULT NULL,
-  `fecha_publicacion` timestamp NOT NULL DEFAULT current_timestamp()
+  `createdAt` datetime DEFAULT current_timestamp(),
+  `updatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `empleos`
+--
+
+INSERT INTO `empleos` (`id_empleo`, `id_empleador`, `titulo`, `descripcion`, `ubicacion`, `tipo`, `salario`, `createdAt`, `updatedAt`) VALUES
+(1, NULL, 'Desarrollador Backend', 'Remoto para Bogot�', 'Bogot�', 'tiempo completo', 50000.00, '2024-10-25 23:28:46', '2024-10-25 18:29:15');
 
 -- --------------------------------------------------------
 
@@ -65,6 +73,13 @@ CREATE TABLE `follows` (
   `fecha_seguimiento` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `follows`
+--
+
+INSERT INTO `follows` (`id`, `follower_id`, `following_id`, `fecha_seguimiento`) VALUES
+(7, 3, 1, '2024-10-25 20:41:56');
+
 -- --------------------------------------------------------
 
 --
@@ -78,6 +93,15 @@ CREATE TABLE `likes` (
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
   `updatedAt` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `likes`
+--
+
+INSERT INTO `likes` (`id`, `idPublicacion`, `idUsuario`, `createdAt`, `updatedAt`) VALUES
+(7, 7, 1, '2024-10-25 23:48:24', '2024-10-25 23:48:24'),
+(9, 8, 2, '2024-10-25 23:49:08', '2024-10-25 23:49:08'),
+(11, 7, 3, '2024-10-26 15:53:00', '2024-10-26 15:53:00');
 
 -- --------------------------------------------------------
 
@@ -122,6 +146,14 @@ CREATE TABLE `publicaciones` (
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
   `updatedAt` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `publicaciones`
+--
+
+INSERT INTO `publicaciones` (`id_publicacion`, `idUsuario`, `descripcion`, `link`, `createdAt`, `updatedAt`) VALUES
+(7, 1, 'Publicaci�n sobre desarrollo Frontend', 'https://ejemplo.com', '2024-10-25 23:35:31', '2024-10-25 23:35:31'),
+(8, 2, 'Publicaci�n sobre Backend y APIs', 'https://ejemplo.com', '2024-10-25 23:36:39', '2024-10-25 23:36:39');
 
 -- --------------------------------------------------------
 
@@ -179,7 +211,9 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id_usuario`, `nombre`, `apellido`, `email`, `password`, `informacionDeUsuario`, `foto_perfil`, `descripcion`, `ubicacion`, `seguidos`, `seguidores`, `puestoDeseado`, `rol`, `createdAt`, `updatedAt`) VALUES
-(1, 'John', 'Doe', 'john.doe@example.com', 'password123', NULL, NULL, NULL, NULL, 0, 0, NULL, 'candidato', '2024-10-20 22:41:16', '2024-10-20 22:41:16');
+(1, 'John', 'Doe', 'john.doe@example.com', 'password123', NULL, NULL, NULL, NULL, 0, 0, NULL, 'candidato', '2024-10-20 22:41:16', '2024-10-20 22:41:16'),
+(2, 'Julian', 'Beltran', 'julian@example.com', 'password123', NULL, NULL, NULL, NULL, 0, 0, NULL, 'candidato', '2024-10-25 21:23:35', '2024-10-25 21:23:35'),
+(3, 'Camilo', 'Urrutia', 'camilo@example.com', 'password123', NULL, NULL, NULL, NULL, 0, 0, NULL, 'candidato', '2024-10-23 00:42:05', '2024-10-23 00:42:05');
 
 --
 -- Índices para tablas volcadas
@@ -205,8 +239,8 @@ ALTER TABLE `empleos`
 --
 ALTER TABLE `follows`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_follower` (`follower_id`),
-  ADD KEY `fk_following` (`following_id`);
+  ADD KEY `fk_follower_id` (`follower_id`),
+  ADD KEY `fk_following_id` (`following_id`);
 
 --
 -- Indices de la tabla `likes`
@@ -276,19 +310,19 @@ ALTER TABLE `comentarios`
 -- AUTO_INCREMENT de la tabla `empleos`
 --
 ALTER TABLE `empleos`
-  MODIFY `id_empleo` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_empleo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `follows`
 --
 ALTER TABLE `follows`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `likes`
 --
 ALTER TABLE `likes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `mensajes`
@@ -306,7 +340,7 @@ ALTER TABLE `perfiles_profesionales`
 -- AUTO_INCREMENT de la tabla `publicaciones`
 --
 ALTER TABLE `publicaciones`
-  MODIFY `id_publicacion` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_publicacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `recomendaciones_empleo`
@@ -324,7 +358,7 @@ ALTER TABLE `solicitudes_empleo`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Restricciones para tablas volcadas
@@ -348,7 +382,9 @@ ALTER TABLE `empleos`
 --
 ALTER TABLE `follows`
   ADD CONSTRAINT `fk_follower` FOREIGN KEY (`follower_id`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_following` FOREIGN KEY (`following_id`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fk_follower_id` FOREIGN KEY (`follower_id`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_following` FOREIGN KEY (`following_id`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_following_id` FOREIGN KEY (`following_id`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `likes`

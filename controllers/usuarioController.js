@@ -29,7 +29,7 @@ export const createUser = async (req, res) => {
     const newUser = await Usuario.create(req.body);
     res.status(201).json(newUser);
   } catch (error) {
-    res.status(500).json({ error: 'Error al crear usuario' });
+    res.status(500).json({ error: 'Error al crear usuario',error });
   }
 };
 
@@ -74,7 +74,7 @@ export const followUser = async (req, res) => {
 
     res.status(201).json({ message: 'Usuario seguido' });
   } catch (error) {
-    res.status(500).json({ error: 'Error al seguir usuario', error });
+    res.status(500).json({ error: 'Error al seguir usuario', error  });
   }
 };
 
